@@ -49,6 +49,52 @@ public class SegmentTree<E> {
     }
 
     /**
+     * 将 index 位置的节点更新成 e
+     *
+     * @param index 待更新节点的索引值
+     * @param e     要更新成的值
+     */
+    public void set(int index, E e) {
+        if (index < 0 || index >= data.length) {
+            throw new IllegalArgumentException("Index is illegal.");
+        }
+        //首先更新 data 对应索引的值
+        data[index] = e;
+        //更新 tree 数组（线段树）中所有关联的值
+        set(0, 0, data.length - 1, index, e);
+    }
+
+    /**
+     * 在以 treeIndex 为根的线段树中更新 index 的值为 e
+     *
+     * @param treeIndex 正在处理的线段树的根节点索引
+     * @param l         左边界
+     * @param r         右边界
+     * @param index     待更新的索引值
+     * @param e         要更新成的值
+     */
+    private void set(int treeIndex, int l, int r, int index, E e) {
+        if (l == r) {
+            tree[treeIndex] = e;
+            return;
+        }
+
+        int mid = l + (r - l) / 2;
+        int leftTreeIndex = leftChild(treeIndex);
+        int rightTreeIndex = rightChild(treeIndex);
+
+        if (index >= mid + 1) {
+            //index 比中间节点位置还靠右，去右子树操作
+            set(rightTreeIndex, mid + 1, r, index, e);
+        } else {
+            //否则去左子树操作
+            set(leftTreeIndex, l, mid, index, e);
+        }
+        //set过相应节点的值后不要忘记合并左右子树的结果，否则被操作的节点的父辈节点值将不会更新
+        tree[treeIndex] = this.merger.merge(tree[leftTreeIndex], tree[rightTreeIndex]);
+    }
+
+    /**
      * 在以 treeIndex 为根的线段树[l...r]中的范围里，搜索区间[queryL...queryR]的值
      *
      * @param treeIndex 正在处理的树的根节点索引
