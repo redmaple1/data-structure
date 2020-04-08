@@ -85,4 +85,25 @@ public class Trie {
         }
     }
 
+    /**
+     * 查询单词 word 是否存在于 Trie 中
+     *
+     * @param word 查询的单词
+     * @return 是否存在
+     */
+    public boolean contains(String word) {
+
+        Node cur = this.root;
+        for (int i = 0; i < word.length(); i++) {
+            char c = word.charAt(i);
+            if (cur.next.get(c) == null) {
+                return false;
+            }
+            cur = cur.next.get(c);
+        }
+        //需要返回当前节点是否是 Trie 中的一个单词，不能仅返回 true。
+        //因为可能在有 panda 单词的 Trie 中查 pan，pan 不存在的情况
+        return cur.beWord;
+    }
+
 }
