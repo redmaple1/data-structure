@@ -106,4 +106,22 @@ public class Trie {
         return cur.beWord;
     }
 
+    /**
+     * 查找是否在 Trie 中有单词以 prefix 为前缀
+     *
+     * @param prefix 前缀字符串
+     * @return 是否存在
+     */
+    public boolean isPrefix(String prefix) {
+        Node cur = this.root;
+        for (int i = 0; i < prefix.length(); i++) {
+            char c = prefix.charAt(i);
+            if (cur.next.get(c) == null) {
+                return false;
+            }
+            cur = cur.next.get(c);
+        }
+        return true;
+    }
+
 }
